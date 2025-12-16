@@ -49,12 +49,12 @@ urlpatterns = [
     path("cars/<int:pk>/update/", CarUpdateView.as_view(), name="car-update"),
     path("cars/<int:pk>/delete/", CarDeleteView.as_view(), name="car-delete"),
     path(
-        "<int:pk>/assign-self/",
+        "cars/<int:pk>/assign-self/",
         assign_self_to_car,
         name="car-assign-self"
     ),
     path(
-        "<int:pk>/remove-self/",
+        "cars/<int:pk>/remove-self/",
         remove_self_from_car,
         name="car-remove-self"
     ),
@@ -63,7 +63,7 @@ urlpatterns = [
         "drivers/<int:pk>/", DriverDetailView.as_view(), name="driver-detail"
     ),
     path("drivers/create/", DriverCreateView.as_view(), name="driver-create"),
-    path("<int:pk>/update/", DriverUpdateView.as_view(), name="driver-update"),
+    path("drivers/<int:pk>/update/", DriverUpdateView.as_view(), name="driver-update"),
     path(
         "drivers/<int:pk>/delete/",
         DriverDeleteView.as_view(),

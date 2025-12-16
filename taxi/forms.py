@@ -1,11 +1,17 @@
 from django import forms
-from .models import Driver, Car
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
+
+from .models import Car
+
+User = get_user_model()
 
 
 class CarCreateForm(forms.ModelForm):
     drivers = forms.ModelMultipleChoiceField(
-        queryset=Driver.objects.all(),
+        queryset=User.objects.all(),
         widget=forms.CheckboxSelectMultiple,
+        required=False,
     )
 
     class Meta:
@@ -20,8 +26,7 @@ class LicenseValidationMixin:
         if len(license_number) != 8:
             raise forms.ValidationError("License must be exactly 8 characters")
 
-        if not license_number[:3].isupper() \
-                or not license_number[:3].isalpha():
+        if not license_number[:3].isupper() or not license_number[:3].isalpha():
             raise forms.ValidationError(
                 "First 3 characters must be uppercase letters"
             )
@@ -32,30 +37,32 @@ class LicenseValidationMixin:
         return license_number
 
 
-class DriverCreateForm(LicenseValidationMixin, forms.ModelForm):
-    class Meta:
-        model = Driver
-        fields = [
+class DriverCreateForm(LicenseValidationMixin, UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = (
             "username",
             "first_name",
             "last_name",
             "email",
             "license_number",
-        ]
+            "password1",
+            "password2",
+        )
 
 
 class DriverUpdateForm(LicenseValidationMixin, forms.ModelForm):
     class Meta:
-        model = Driver
-        fields = [
+        model = User
+        fields = (
             "first_name",
             "last_name",
             "email",
-            "license_number"
-        ]
+            "license_number",
+        )
 
 
 class DriverLicenseUpdateForm(LicenseValidationMixin, forms.ModelForm):
     class Meta:
-        model = Driver
+        model = User
         fields = ("license_number",)
